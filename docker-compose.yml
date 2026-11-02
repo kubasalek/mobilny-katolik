@@ -1,0 +1,29 @@
+services:
+  service:
+    build: .
+    container_name: mk-api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      # Lewa strona to port na VPS (ten podasz w Cloudflare Tunnel jako localhost:3000)
+      # Prawa strona to port wewnątrz kontenera (musi zgadzać się z tym w kodzie API)
+      - "3000:3000"
+    networks:
+      - MobilnyKatolik
+    volumes:
+      # Lewa strona: folder na Twoim VPS (np. /apps/MobilnyKatolikAPI/dane)
+      # Prawa strona: folder wewnątrz kontenera Dockera
+      - ./custom:/app/custom
+      - ./eticket:/app/eticket
+      - ./events:/app/events
+      - ./icsu:/app/icsu
+      - ./orders:/app/orders
+      - ./photobox:/app/photobox
+      - ./userdb:/app/userdb
+      - ./templates:/app/templates
+networks:
+  MobilnyKatolik:
+    external: true

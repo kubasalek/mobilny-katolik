@@ -1,0 +1,275 @@
+openapi: 3.1.0
+
+info:
+  title: Mobilny Katolik API
+  description: 
+    "Obsługa aplikacji Mobilny Katolik oraz serwisów powiązanych: Sklep Mobilny Katolik, PMK"
+  version: "1.0"
+
+security:
+  - bearerToken: []
+
+tags:
+  - name: auth
+    description: Autoryzowanie użytkowników
+  - name: PMK
+    description: Operacje wykonywane przez PMK
+  - name: PMK Events
+    description: Operacje na wydarzeniach wykonywane przez PMK
+  - name: user
+    description: Operacje na użytkownikach
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Pobieranie tokenów
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Pomyślnie pobrano tokeny
+        '401':
+          description: Błąd autoryzacji
+        default:
+          description: Wystąpił błąd
+  /auth/check:
+    get:
+      tags:
+        - auth
+      summary: Sprawdzanie tokenów
+      responses:
+        '200':
+          description: Pomyślnie połączono
+        '401':
+          description: Błąd autoryzacji
+        default:
+          description: Wystąpił błąd
+  /auth/refresh:
+    post:
+      tags:
+        - auth
+      summary: Odświeżanie tokenów
+      description: "Żądanie przesyła do API plik cookie httpOnly zawierający refreshToken"
+      security: []
+      responses:
+        '200':
+          description: Pomyślnie pobrano tokeny
+        '401':
+          description: Błąd autoryzacji
+        default:
+          description: Wystąpił błąd
+  /pmk/users:
+    get:
+      tags:
+        - PMK
+      summary: Pobiera listę użytkowników
+      description: "Wymagany poziom uprawnień: 3"
+      responses:
+        '200':
+          description: Pomyślnie pobrano listę użytkowników
+        '401':
+          description: Błąd autoryzacji
+        '403':
+          description: Brak uprawnień
+        default:
+          description: Wystąpił błąd
+  /pmk/user/{userID}:
+    get:
+      tags:
+        - PMK
+      summary: Pobiera dane użytkownika
+      description: "Wymagany poziom uprawnień: 3"
+      parameters:
+        - name: userID
+          in: path
+          description: ID użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pomyślnie pobrano dane użytkownika
+        '400':
+          description: Użytkownik nie został odnaleziony
+        '401':
+          description: Błąd autoryzacji
+        '403':
+          description: Brak uprawnień
+        default:
+          description: Wystąpił błąd
+    patch:
+      tags:
+        - PMK
+      summary: Modyfikuje dane użytkownika
+      description: "Wymagany poziom uprawnień: 4 (5 dla modyfikacji uprawnień)"
+      parameters:
+        - name: userID
+          in: path
+          description: ID użytkownika
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Pomyślnie zmodyfikowano dane użytkownika
+        '400':
+          description: Użytkownik nie został odnaleziony
+        '401':
+          description: Błąd autoryzacji
+        '403':
+          description: Brak uprawnień
+        default:
+          description: Wystąpił błąd
+  /pmk/event/list:
+    get:
+      tags:
+        - PMK Events
+      summary: Pobiera listę wydarzeń
+      responses:
+        '200':
+          description: Pomyślnie pobrano listę wydarzeń
+        '400':
+          description: Nie znaleziono wydarzenia
+        default:
+          description: Wystąpił błąd
+  /pmk/event/{eventID}:
+    get:
+      tags:
+        - PMK Events
+      summary: Pobiera dane wydarzenia
+      parameters:
+        - name: eventID
+          in: path
+          description: ID wydarzenia
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pomyślnie pobrano dane wydarzenia
+        '400':
+          description: Nie znaleziono wydarzenia
+        default:
+          description: Wystąpił błąd
+  /user:
+    get:
+      tags:
+        - user
+      summary: Pobieranie danych użytkownika
+      responses:
+        '200':
+          description: Pomyślnie pobrano dane
+        '401':
+          description: Błąd autoryzacji
+        default:
+          description: Wystąpił błąd
+    patch:
+      tags:
+        - user
+      summary: Modyfikacja danych użytkownika
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  examples: [""]
+        required: true
+      responses:
+        '200':
+          description: Pomyślnie zmodyfikowano dane
+        '401':
+          description: Błąd autoryzacji
+        default:
+          description: Wystąpił błąd
+  /user/avatar/{userID}:
+    get:
+      tags:
+        - user
+      summary: Pobiera zdjęcie profilowe użytkownika
+      security: []
+      parameters:
+        - name: userID
+          in: path
+          description: ID użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pomyślnie pobrano zdjęcie profilowe
+        default:
+          description: Wystąpił błąd
+  /user/register:
+    post:
+      tags:
+        - user
+      summary: Rejestracja użytkownika
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  examples: ["JAN"]
+                last_name:
+                  type: string
+                  examples: ["KOWALSKI"]
+                class:
+                  type: string
+                  examples: ["1lo"]
+                email:
+                  type: string
+                  examples: ["jan@kowalski.pl"]
+                password:
+                  type: string
+                  examples: ["newpassword"]
+        required: true
+      responses:
+        '200':
+          description: Pomyślnie zarejestrowano użytkownika
+        default:
+          description: Wystąpił błąd  
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerToken:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          examples: ["JAN"]
+        last_name:
+          type: string
+          examples: ["KOWALSKI"]
+        class:
+          type: string
+          examples: ["absolwent"]
+        nickname:
+          type: string
+          examples: [""]
+        email:
+          type: string
+          examples: ["jan@kowalski.pl"]
+        permissions:
+          type: integer
+          examples: [0]
