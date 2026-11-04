@@ -3,10 +3,7 @@ custom/
 eticket/
 events/
 icsu/
-models/
-modules/
 orders/
 photobox/
-templates/
 userdb/
 .env
