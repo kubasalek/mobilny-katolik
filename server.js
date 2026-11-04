@@ -104,7 +104,7 @@ app.listen(3000, async () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Mobilny Katolik API by Kuba Salek (MIKR.US)')
+  res.send('Mobilny Katolik API by Kuba Salek - last updated: 04/11/2026')
 })
 
 app.get('/generateluckylist', (req, res) => {
