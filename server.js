@@ -21,11 +21,6 @@ const pool = require('./db');
 //Swagger
 const swaggerUi = require('swagger-ui-express');
 
-const mk = require('./global.js');
-
-//eTicket
-//const { generateTicket } = require('./eticket.js');
-
 const { Readable } = require('stream');
 const Jimp = require('jimp');
 
@@ -48,6 +43,7 @@ app.use(cors({
     credentials: true
 }));
 
+const mk = require('./modules/global.js');
 const pmkRouter = require('./modules/pmk.js');
 const userManagement = require('./modules/userManagement.js');
 const authenticationRouter = require('./modules/auth.js');
