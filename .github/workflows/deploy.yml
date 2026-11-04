@@ -21,13 +21,11 @@ jobs:
           script: |
             cd /apps/MobilnyKatolikAPI
 
-            # 1. Pobierz najświeższe zmiany z repozytorium
             git reset --hard origin/main
             git pull origin main
 
-            # 2. Przebuduj kontenery i zrestartuj usługi
-            docker compose down
-            docker compose up -d --build
+            export DOCKER_BUILDKIT=1
 
-            # 3. (Opcjonalnie) Posprzątaj nieużywane obrazy
+            docker compose build
+            docker compose up -d
             docker image prune -f
