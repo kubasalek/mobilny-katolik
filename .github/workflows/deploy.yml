@@ -19,7 +19,7 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script_stop: true
           script: |
-            cd /apps/MobilnyKatolikAPI
+            cd ${{ secrets.VPS_APP_DIR }}
 
             git reset --hard origin/main
             git pull origin main
