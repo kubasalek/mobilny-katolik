@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const path = require('path');
 const auth = require('basic-auth');
 const bcrypt = require('bcrypt');
-const User = require('./models/User.js');
-const pool = require('./db');
+const User = require('../models/User.js');
+const pool = require('../db');
 const jwt = require('jsonwebtoken');
 
 const cryptokey = process.env.CRYPTOKEY
