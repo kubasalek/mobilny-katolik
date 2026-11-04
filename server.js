@@ -43,7 +43,7 @@ app.use(cors({
     credentials: true
 }));
 
-const mk = require('./modules/global.js');
+const mk = require('./global.js');
 const pmkRouter = require('./modules/pmk.js');
 const userManagement = require('./modules/userManagement.js');
 const authenticationRouter = require('./modules/auth.js');
